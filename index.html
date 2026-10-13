@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>黑白灰排版框架 - 数字占位版</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+        background-color: #121212;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* 手机竖屏容器 */
+    .phone-frame {
+        width: 100%;
+        max-width: 390px;
+        height: 844px;
+        background: linear-gradient(135deg, #1e1e1e 0%, #2a2a2a 100%);
+        position: relative;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-radius: 40px;
+        box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px;
+        color: #e0e0e0;
+    }
+
+    /* 隐藏滚动条 */
+    .phone-frame::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* ================= 顶部状态栏 ================= */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0 10px 0;
+    }
+
+    .menu-btn, .right-icons {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 8px 12px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .menu-btn { width: 40px; height: 40px; justify-content: center; border-radius: 50%; }
+
+    /* 数字占位符通用样式 */
+    .num-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #888;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px dashed #555;
+        border-radius: 6px;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* ================= 个人资料卡片 ================= */
+    .profile-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 24px 20px;
+        text-align: center;
+        margin-top: 10px;
+        backdrop-filter: blur(10px);
+    }
+
+    .avatar-box {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin: 0 auto 12px auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-name {
+        font-size: 24px;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    /* 数据统计行 */
+    .stats-row {
+        display: flex;
+        justify-content: space-between;
+        padding-top: 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-item {
+        flex: 1;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .stat-label-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: #888;
+    }
+
+    .stat-value {
+        font-size: 16px;
+        color: #ddd;
+        font-weight: 400;
+        letter-spacing: 1px;
+    }
+
+    /* ================= 菜单列表 ================= */
+    .menu-list {
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .menu-item {
+        display: flex;
+        align-items: center;
+        padding: 16px 12px;
+        border-radius: 12px;
+        transition: background 0.2s;
+        cursor: pointer;
+    }
+
+    .menu-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* 左侧图标空位 */
+    .item-icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 16px;
+        flex-shrink: 0;
+    }
+
+    /* 右侧文字内容区 */
+    .item-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .item-title-box {
+        height: 16px;
+        width: 80px;
+    }
+
+    .item-subtitle-box {
+        height: 12px;
+        width: 140px;
+    }
+
+    /* 右侧箭头空位（灰色小三角） */
+    .item-arrow {
+        width: 16px;
+        height: 16px;
+        border-top: 1px solid #555;
+        border-right: 1px solid #555;
+        transform: rotate(45deg);
+        opacity: 0.5;
+        flex-shrink: 0;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ================= 底部导航栏 ================= */
+    .bottom-nav {
+        margin-top: auto; /* 推到底部 */
+        margin-bottom: 24px;
+        background: rgba(30, 30, 30, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 30px;
+        padding: 10px 16px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: 4px 12px;
+    }
+
+    .nav-icon-box {
+        width: 28px;
+        height: 28px;
+    }
+
+    .nav-text-box {
+        width: 36px;
+        height: 12px;
+    }
+
+    /* 底部第一个选中状态（当前页面） */
+    .nav-item.active .num-box {
+        border-color: #aaa;
+        color: #ccc;
+        background: rgba(255, 255, 255, 0.1);
+    }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+    
+    <!-- 顶部状态栏 -->
+    <div class="top-bar">
+        <div class="menu-btn">
+            <div class="num-box" style="border:none;">【1】</div>
+        </div>
+        <div class="right-icons">
+            <div class="num-box" style="border:none; width:24px; height:24px;">【2】</div>
+            <div class="num-box" style="border:none; width:24px; height:24px;">【3】</div>
+            <div class="num-box" style="border:none; width:24px; height:24px;">【4】</div>
+        </div>
+    </div>
+
+    <!-- 个人资料卡片 -->
+    <div class="profile-card">
+        <div class="avatar-box">
+            <div class="num-box" style="border-radius: 50%;">【5】</div>
+        </div>
+        <div class="profile-name">【6】</div>
+        
+        <div class="stats-row">
+            <div class="stat-item">
+                <div class="stat-label-row">
+                    <div class="num-box" style="width:14px; height:14px; border-radius:4px; border:none;">【7】</div>
+                    <span>节点</span>
+                </div>
+                <div class="stat-value">【8】</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label-row">
+                    <span>周日</span>
+                </div>
+                <div class="stat-value">【9】</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label-row">
+                    <span>对话</span>
+                </div>
+                <div class="stat-value">【10】</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 菜单列表（指令及以下每一栏） -->
+    <div class="menu-list">
+        
+        <!-- 1. 指令 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【11】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【12】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【13】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+        <!-- 2. 主题 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【14】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【15】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【16】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+        <!-- 3. 主动 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【17】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【18】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【19】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+        <!-- 4. 世界书 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【20】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【21】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【22】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+        <!-- 5. 记忆 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【23】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【24】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【25】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+        <!-- 6. 对话回顾 -->
+        <div class="menu-item">
+            <div class="item-icon-box"><div class="num-box">【26】</div></div>
+            <div class="item-content">
+                <div class="item-title-box"><div class="num-box">【27】</div></div>
+                <div class="item-subtitle-box"><div class="num-box">【28】</div></div>
+            </div>
+            <div class="item-arrow"></div>
+        </div>
+
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <div class="nav-icon-box"><div class="num-box">【29】</div></div>
+            <div class="nav-text-box"><div class="num-box">【30】</div></div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon-box"><div class="num-box">【31】</div></div>
+            <div class="nav-text-box"><div class="num-box">【32】</div></div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon-box"><div class="num-box">【33】</div></div>
+            <div class="nav-text-box"><div class="num-box">【34】</div></div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon-box"><div class="num-box">【35】</div></div>
+            <div class="nav-text-box"><div class="num-box">【36】</div></div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
